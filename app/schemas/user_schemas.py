@@ -1,4 +1,6 @@
 from builtins import ValueError, any, bool, str
+from urllib.parse import urlparse
+import requests
 from pydantic import BaseModel, EmailStr, Field, validator, root_validator
 from typing import Optional, List
 from datetime import datetime
@@ -23,13 +25,28 @@ class UserBase(BaseModel):
     first_name: Optional[str] = Field(None, example="John")
     last_name: Optional[str] = Field(None, example="Doe")
     bio: Optional[str] = Field(None, example="Experienced software developer specializing in web applications.")
-    profile_picture_url: Optional[str] = Field(None, example="https://example.com/profiles/john.jpg")
+    #profile_picture_url: Optional[str] = Field(None, example="https://example.com/profiles/john.jpg")
+    profile_picture_url: Optional[str] = Field(None, description="The user's profile picture link. Should have a valid image file (e.g., .jpg, .jpeg, .png).", example="https://example.com/profiles/john.jpg")
+
     linkedin_profile_url: Optional[str] =Field(None, example="https://linkedin.com/in/johndoe")
     github_profile_url: Optional[str] = Field(None, example="https://github.com/johndoe")
     role: UserRole
 
     _validate_urls = validator('profile_picture_url', 'linkedin_profile_url', 'github_profile_url', pre=True, allow_reuse=True)(validate_url)
- 
+     
+    @validator('profile_picture_url', pre=True, always=True)
+    def validate_profile_picture_url(cls, value):
+        if value is None:
+            return value  # If the URL is optional, allow None values
+        parsed_url = urlparse(value)
+        # Make a HEAD request to check accessibility
+        #response = requests.head(parsed_url, timeout=5)
+        #if response.status_code != 200:
+        #    raise ValueError( "Profile picture URL is not accessible non-200 response")
+        if not re.search(r"\.(jpg|jpeg|png)$", parsed_url.path):
+            raise ValueError("Should have a valid image file (e.g., .jpg, .jpeg, .png)")
+        return value
+    
     class Config:
         from_attributes = True
 
