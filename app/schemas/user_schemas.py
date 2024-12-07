@@ -43,6 +43,7 @@ class UserBase(BaseModel):
         #response = requests.head(parsed_url, timeout=5)
         #if response.status_code != 200:
         #    raise ValueError( "Profile picture URL is not accessible non-200 response")
+        #
         if not re.search(r"\.(jpg|jpeg|png)$", parsed_url.path):
             raise ValueError("Should have a valid image file (e.g., .jpg, .jpeg, .png)")
         return value
