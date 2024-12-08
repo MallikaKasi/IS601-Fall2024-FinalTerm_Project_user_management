@@ -168,3 +168,6 @@ Deployment:
 •	GitHub Repository: [User Management Project](https://github.com/MallikaKasi/IS601-Fall2024-FinalTerm_Project_user_management)
 ________________________________________
 
+Course Reflection Docuement :  [IS601-Reflection-Doc](https://github.com/MallikaKasi/IS601-Fall2024-FinalTerm_Project_user_management/blob/main/Final_term_IS601-Course-Reflection.docx)
+
+________________________________________
