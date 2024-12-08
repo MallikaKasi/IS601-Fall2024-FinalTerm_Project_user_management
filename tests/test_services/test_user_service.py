@@ -161,3 +161,29 @@ async def test_unlock_user_account(db_session, locked_user):
     assert unlocked, "The account should be unlocked"
     refreshed_user = await UserService.get_by_id(db_session, locked_user.id)
     assert not refreshed_user.is_locked, "The user should no longer be locked"
+
+# test_create_user_duplicate_nickname
+async def test_create_user_duplicate_nickname(db_session, email_service, user):
+    user_data = {
+        "nickname": user.nickname,  # Duplicate nickname
+        "email": "unique_email@example.com",
+        "password": "ValidPassword123!"
+        }
+    new_user = await UserService.create(db_session, user_data, email_service)
+    assert new_user is None, "Creating a user with a duplicate nickname should fail."
+
+# test_update_user_non_existent_id
+async def test_update_user_non_existent_id(db_session):
+    non_existent_user_id = "non-existent-id"
+    updated_user = await UserService.update(db_session, non_existent_user_id, {"email": "newemail@example.com"})
+    assert updated_user is None, "Updating a non-existent user should return None."
+
+# test_register_user_existing_email
+async def test_register_user_existing_email(db_session, email_service, user):
+    user_data = {
+        "nickname": generate_nickname(),
+        "email": user.email,  # Use an existing user's email
+        "password": "AnotherValidPassword123!"
+    }
+    new_user = await UserService.register_user(db_session, user_data, email_service)
+    assert new_user is None, "Registering a user with an existing email should fail."
